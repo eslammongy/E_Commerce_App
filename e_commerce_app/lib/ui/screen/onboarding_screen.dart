@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/model/onboarding_item.dart';
+import 'package:e_commerce_app/remote/local/cash_helper.dart';
 import 'package:e_commerce_app/style/color.dart';
 import 'package:e_commerce_app/ui/screen/login_screen.dart';
 import 'package:e_commerce_app/ui/widgets/indicator_container.dart';
@@ -54,8 +55,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 FloatingActionButton(
                   onPressed: () {
                     if (lastPage) {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => LoginScreen()));
+                      firstRunApp();
                     } else {
                       pageController.nextPage(
                           duration: Duration(microseconds: 700),
@@ -100,8 +100,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   padding: EdgeInsets.all(15),
                   color: defaultColor,
                   onPressed: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => LoginScreen()));
+                    firstRunApp();
                   },
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)),
@@ -120,5 +119,15 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         ),
       ),
     ));
+  }
+
+  void firstRunApp() {
+    CacheHelper.saveUserPreferance(key: "OnBoarding", value: true)
+        .then((value) {
+      if (value) {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => LoginScreen()));
+      }
+    });
   }
 }

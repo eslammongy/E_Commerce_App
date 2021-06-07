@@ -37,6 +37,7 @@ dependencies:
   conditional_builder: ^1.0.2
   hexcolor: ^2.0.3
   shared_preferences: ^2.0.5
+  fluttertoast: ^8.0.6
 
 dev_dependencies:
   flutter_test:
@@ -57,6 +58,7 @@ flutter:
   assets:
     - assets/images/
     
+    
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -70,17 +72,13 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Raleway
-      fonts:
-        - asset: assets/fonts/Raleway-Bold.ttf
-        - asset: assets/fonts/Raleway-Regular.ttf
-          weight: 700
     - family: RobotoCondensed
       fonts:
         - asset: assets/fonts/RobotoCondensed-Bold.ttf
-          weight: 800
         - asset: assets/fonts/RobotoCondensed-Light.ttf
-          weight: 400
+    - family: Pacifico
+      fonts:
+        - asset: assets/fonts/Pacifico-Regular.ttf      
         
   #
   # For details regarding fonts from package dependencies,

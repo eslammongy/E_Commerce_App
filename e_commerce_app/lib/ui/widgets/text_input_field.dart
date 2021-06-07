@@ -25,6 +25,8 @@ Widget textInputField({
       onTap: onTap,
       validator: validate,
       decoration: InputDecoration(
+        fillColor: Colors.purple,
+        focusColor: Colors.purple,
         labelText: label,
         prefixIcon: Icon(
           prefix,
@@ -37,6 +39,6 @@ Widget textInputField({
                 ),
               )
             : null,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
       ),
     );

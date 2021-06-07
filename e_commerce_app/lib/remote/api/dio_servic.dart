@@ -8,7 +8,7 @@ class DioServices {
     dio = Dio(BaseOptions(
       baseUrl: "https://student.valuxapps.com/api/",
       receiveDataWhenStatusError: true,
-      headers: {'Content-Type': 'application/json', 'lang': 'en'},
+      headers: {'Content-Type': 'application/json'},
     ));
   }
 
@@ -18,28 +18,21 @@ class DioServices {
     String lang = 'ar',
     String token,
   }) async {
-    dio.options = BaseOptions(
-      headers: {
-        'lang': lang,
-        'Authorization ': token,
-      },
-    );
+    dio.options.headers = {
+      'lang': lang,
+      'Authorization': token,
+    };
     return await dio.get(url, queryParameters: query);
   }
 
   static Future<Response> postData({
-    @required String path,
+    @required String url,
     Map<String, dynamic> query,
     @required Map<String, dynamic> data,
     String lang = 'ar',
     String token,
   }) async {
-    dio.options = BaseOptions(
-      headers: {
-        'lang': lang,
-        'Authorization ': token,
-      },
-    );
-    return dio.post(path, queryParameters: query, data: data);
+    dio.options.headers = {'lang': lang, 'Authorization': token};
+    return dio.post(url, queryParameters: query, data: data);
   }
 }
