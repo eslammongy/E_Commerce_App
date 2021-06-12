@@ -1,3 +1,5 @@
+import 'package:e_commerce_app/remote/local/cash_helper.dart';
+import 'package:e_commerce_app/ui/screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -38,4 +40,16 @@ Color setToastColor({ToastColor toastColor}) {
       break;
   }
   return color;
+}
+
+//sign out
+void signOut(context) {
+  CacheHelper.clearUserData(key: 'token').then((value) {
+    if (value) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+          (route) => false);
+    }
+  });
 }

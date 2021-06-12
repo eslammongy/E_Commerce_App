@@ -1,11 +1,13 @@
+import 'package:e_commerce_app/bloc/bottombar/bottom_bar_cubit.dart';
 import 'package:e_commerce_app/bloc/login/login_statas.dart';
 import 'package:e_commerce_app/bloc/login/user_login_cubit.dart';
 import 'package:e_commerce_app/remote/api/dio_servic.dart';
+import 'package:e_commerce_app/remote/api/end_point.dart';
 import 'package:e_commerce_app/remote/local/cash_helper.dart';
 import 'package:e_commerce_app/style/app_theme.dart';
-import 'package:e_commerce_app/ui/screen/home_screen.dart';
 import 'package:e_commerce_app/ui/screen/login_screen.dart';
 import 'package:e_commerce_app/ui/screen/onboarding_screen.dart';
+import 'package:e_commerce_app/ui/screen/parent_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,11 +17,11 @@ void main() async {
   await CacheHelper.init();
   Widget widget;
   bool isFirstRun = CacheHelper.getUserPreferences(key: "OnBoarding");
-  String userToken = CacheHelper.getUserPreferences(key: "token");
+  token = CacheHelper.getUserPreferences(key: "token");
 
   if (isFirstRun != null) {
-    if (userToken != null)
-      widget = HomeScreen();
+    if (token != null)
+      widget = ParentLayout();
     else
       widget = LoginScreen();
   } else {
@@ -36,8 +38,14 @@ class MyApp extends StatelessWidget {
   MyApp(this.startingWidget);
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (context) => UserLoginCubit(),
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => UserLoginCubit(),
+          ),
+          BlocProvider(
+              create: (BuildContext context) => BottomBarCubit()..getHomeData())
+        ],
         child: BlocConsumer<UserLoginCubit, UserLoginStates>(
           listener: (context, State) {},
           builder: (context, State) => MaterialApp(
