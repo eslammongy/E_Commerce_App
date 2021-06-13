@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/bloc/bottombar/bottom_bar_status.dart';
+import 'package:e_commerce_app/model/category_model.dart';
 import 'package:e_commerce_app/model/home_model.dart';
 import 'package:e_commerce_app/remote/api/dio_servic.dart';
 import 'package:e_commerce_app/remote/api/end_point.dart';
@@ -7,6 +8,7 @@ import 'package:e_commerce_app/ui/screen/favorite_screen.dart';
 import 'package:e_commerce_app/ui/screen/home_screen.dart';
 import 'package:e_commerce_app/ui/screen/products_screen.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BottomBarCubit extends Cubit<BottomBarStatus> {
@@ -41,6 +43,17 @@ class BottomBarCubit extends Cubit<BottomBarStatus> {
     }).catchError((onError) {
       print(onError.toString());
       emit(ShopErrorHomeStatus());
+    });
+  }
+
+  CategoriesModel categoriesModel;
+  void getCategoriesData() {
+    DioServices.getData(url: CATEGORIES, token: token).then((value) {
+      categoriesModel = CategoriesModel.formJson(value.data);
+      emit(ShopSuccessCategoryStatus());
+    }).catchError((onError) {
+      print(onError.toString());
+      emit(ShopErrorCategoryStatus());
     });
   }
 }

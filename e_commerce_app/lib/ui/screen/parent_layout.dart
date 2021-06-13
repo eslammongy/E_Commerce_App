@@ -13,7 +13,7 @@ class ParentLayout extends StatelessWidget {
     return BlocConsumer<BottomBarCubit, BottomBarStatus>(
         listener: (context, state) {},
         builder: (context, state) {
-          var bottomBarBloc = BottomBarCubit();
+          var bottomBarBloc = BottomBarCubit.get(context);
           return Scaffold(
             extendBody: true,
             appBar: AppBar(

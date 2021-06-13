@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:e_commerce_app/bloc/bottombar/bottom_bar_cubit.dart';
 import 'package:e_commerce_app/bloc/bottombar/bottom_bar_status.dart';
+import 'package:e_commerce_app/model/category_model.dart';
 import 'package:e_commerce_app/model/home_model.dart';
 import 'package:e_commerce_app/style/color.dart';
 import 'package:flutter/material.dart';
@@ -14,19 +15,22 @@ class HomeScreen extends StatelessWidget {
         listener: (context, state) {},
         builder: (context, State) {
           return ConditionalBuilder(
-              condition: BottomBarCubit.get(context).homeModel != null,
-              builder: (context) =>
-                  buildHomeWidget(BottomBarCubit.get(context).homeModel),
+              condition: BottomBarCubit.get(context).homeModel != null &&
+                  BottomBarCubit.get(context).categoriesModel != null,
+              builder: (context) => buildHomeWidget(
+                  BottomBarCubit.get(context).homeModel,
+                  BottomBarCubit.get(context).categoriesModel),
               fallback: (context) => Center(
                     child: CircularProgressIndicator(),
                   ));
         });
   }
 
-  Widget buildHomeWidget(HomeModel homeModel) {
+  Widget buildHomeWidget(HomeModel homeModel, CategoriesModel categoriesModel) {
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CarouselSlider(
               items: homeModel.data.banners
@@ -57,6 +61,48 @@ class HomeScreen extends StatelessWidget {
           SizedBox(
             height: 10,
           ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Categories",
+                textAlign: TextAlign.start,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    fontSize: 25,
+                    color: Colors.orange[900],
+                    fontWeight: FontWeight.w600),
+              ),
+              Container(
+                padding: EdgeInsets.all(10),
+                margin: EdgeInsets.all(10),
+                height: 100.0,
+                child: ListView.separated(
+                    physics: BouncingScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) =>
+                        buildCategoryItem(categoriesModel.data.data[index]),
+                    separatorBuilder: (context, index) => SizedBox(
+                          width: 10,
+                        ),
+                    itemCount: categoriesModel.data.data.length),
+              ),
+              Text(
+                "New Products",
+                textAlign: TextAlign.start,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    fontSize: 25,
+                    color: Colors.orange[900],
+                    fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 10,
+          ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 5),
             color: Colors.grey[300],
@@ -64,7 +110,7 @@ class HomeScreen extends StatelessWidget {
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               crossAxisCount: 2,
-              mainAxisSpacing: 1.0,
+              mainAxisSpacing: 4.0,
               crossAxisSpacing: 4.0,
               childAspectRatio: 1 / 1.6,
               children: List.generate(
@@ -78,8 +124,42 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  Widget buildCategoryItem(DataModel dataModel) {
+    return Stack(
+      alignment: AlignmentDirectional.bottomCenter,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Image(
+            image: NetworkImage(dataModel.image),
+            height: 100,
+            width: 100,
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.8),
+              borderRadius: BorderRadius.all(Radius.circular(25))),
+          width: 100,
+          child: Text(
+            dataModel.name,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+                fontSize: 15,
+                color: Colors.orange[900],
+                fontWeight: FontWeight.w700),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget buildGridProductItem(ProductsModel productsModel) => Container(
-        color: Colors.white,
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(25))),
         child: Column(
           children: [
             Stack(alignment: AlignmentDirectional.bottomStart, children: [
@@ -87,7 +167,7 @@ class HomeScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 child: Image(
                   image: NetworkImage(productsModel.image),
-                  fit: BoxFit.contain,
+                  fit: BoxFit.fill,
                   width: double.infinity,
                   height: 200,
                 ),
@@ -144,6 +224,9 @@ class HomeScreen extends StatelessWidget {
                       onPressed: () {}, icon: Icon(Icons.favorite_border))
                 ],
               ),
+            ),
+            SizedBox(
+              width: 10,
             ),
           ],
         ),
