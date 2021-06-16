@@ -1,9 +1,11 @@
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:e_commerce_app/bloc/login/login_statas.dart';
 import 'package:e_commerce_app/bloc/login/user_login_cubit.dart';
+import 'package:e_commerce_app/remote/api/end_point.dart';
 import 'package:e_commerce_app/remote/local/cash_helper.dart';
 import 'package:e_commerce_app/style/color.dart';
-import 'package:e_commerce_app/ui/screen/home_screen.dart';
+import 'package:e_commerce_app/ui/screen/parent_layout.dart';
+import 'package:e_commerce_app/ui/screen/register_screen.dart';
 import 'package:e_commerce_app/ui/widgets/componant.dart';
 import 'package:e_commerce_app/ui/widgets/text_input_field.dart';
 import 'package:flutter/material.dart';
@@ -18,28 +20,29 @@ class LoginScreen extends StatelessWidget {
     var emailTextController = TextEditingController();
     var passwordTextController = TextEditingController();
     return BlocProvider(
-        create: (BuildContext context) => UserLoginCubit(),
-        child: BlocConsumer<UserLoginCubit, UserLoginStates>(
+        create: (BuildContext context) => UserRegisterCubit(),
+        child: BlocConsumer<UserRegisterCubit, UserRegisterStates>(
             listener: (context, state) {
-          if (state is UserLoginSuccessState) {
-            if (state.loginModel.status) {
+          if (state is UserRegisterSuccessState) {
+            if (state.RegisterModel.status) {
               // showToast(
               //     message: state.loginModel.message,
               //     toastColor: ToastColor.SUCCESS);
-              print(state.loginModel.message + "eslam");
+              print(state.RegisterModel.message + "eslam");
               CacheHelper.saveUserPreferance(
-                      key: "token", value: state.loginModel.data.token)
+                      key: "token", value: state.RegisterModel.data.token)
                   .then((value) {
+                token = state.RegisterModel.data.token;
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                    MaterialPageRoute(builder: (context) => ParentLayout()),
                     (route) => false);
               });
             } else {
               showToast(
-                  message: state.loginModel.message,
+                  message: state.RegisterModel.message,
                   toastColor: ToastColor.ERROR);
-              print(state.loginModel.message + "eslam");
+              print(state.RegisterModel.message + "eslam");
             }
           }
         }, builder: (context, state) {
@@ -102,11 +105,11 @@ class LoginScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(12.0),
                       child: textInputField(
                           controller: passwordTextController,
-                          suffix: UserLoginCubit.get(context).suffix,
+                          suffix: UserRegisterCubit.get(context).suffix,
                           isPassword:
-                              UserLoginCubit.get(context).isPasswordShowing,
+                              UserRegisterCubit.get(context).isPasswordShowing,
                           suffixPressed: () {
-                            UserLoginCubit.get(context)
+                            UserRegisterCubit.get(context)
                                 .changePasswordVisibility();
                           },
                           type: TextInputType.visiblePassword,
@@ -117,7 +120,7 @@ class LoginScreen extends StatelessWidget {
                           },
                           onSubmit: (value) {
                             if (formGlobalKey.currentState.validate()) {
-                              UserLoginCubit.get(context).userLogin(
+                              UserRegisterCubit.get(context).userLogin(
                                   email: emailTextController.text,
                                   password: passwordTextController.text);
                             }
@@ -132,7 +135,7 @@ class LoginScreen extends StatelessWidget {
                       width: double.infinity,
                       margin: EdgeInsets.all(15),
                       child: ConditionalBuilder(
-                        condition: state is! UserLoginLoadingState,
+                        condition: state is! UserRegisterLoadingState,
                         builder: (context) => MaterialButton(
                             padding: EdgeInsets.all(12),
                             color: Colors.deepPurple,
@@ -140,7 +143,7 @@ class LoginScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10)),
                             onPressed: () {
                               if (formGlobalKey.currentState.validate()) {
-                                UserLoginCubit.get(context).userLogin(
+                                UserRegisterCubit.get(context).userLogin(
                                     email: emailTextController.text,
                                     password: passwordTextController.text);
                               }
@@ -173,7 +176,7 @@ class LoginScreen extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () {
-                            //navigateTo(context, RegisterScreen());
+                            navigateTo(context, RegisterScreen());
                             Fluttertoast.showToast(
                                 msg: "state.loginModel.message",
                                 toastLength: Toast.LENGTH_LONG,

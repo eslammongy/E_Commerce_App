@@ -5,6 +5,7 @@ import 'package:e_commerce_app/bloc/bottombar/bottom_bar_status.dart';
 import 'package:e_commerce_app/model/category_model.dart';
 import 'package:e_commerce_app/model/home_model.dart';
 import 'package:e_commerce_app/style/color.dart';
+import 'package:e_commerce_app/ui/widgets/componant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,21 +13,30 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<BottomBarCubit, BottomBarStatus>(
-        listener: (context, state) {},
-        builder: (context, State) {
-          return ConditionalBuilder(
-              condition: BottomBarCubit.get(context).homeModel != null &&
-                  BottomBarCubit.get(context).categoriesModel != null,
-              builder: (context) => buildHomeWidget(
-                  BottomBarCubit.get(context).homeModel,
-                  BottomBarCubit.get(context).categoriesModel),
-              fallback: (context) => Center(
-                    child: CircularProgressIndicator(),
-                  ));
-        });
+        listener: (context, state) {
+      if (state is ShopSuccessChangeFavoritStatus) {
+        if (!state.favoriteProducts.status) {
+          showToast(
+              message: state.favoriteProducts.message,
+              toastColor: ToastColor.ERROR);
+        }
+      }
+    }, builder: (context, State) {
+      return ConditionalBuilder(
+          condition: BottomBarCubit.get(context).homeModel != null &&
+              BottomBarCubit.get(context).categoriesModel != null,
+          builder: (context) => buildHomeWidget(
+              BottomBarCubit.get(context).homeModel,
+              BottomBarCubit.get(context).categoriesModel,
+              context),
+          fallback: (context) => Center(
+                child: CircularProgressIndicator(),
+              ));
+    });
   }
 
-  Widget buildHomeWidget(HomeModel homeModel, CategoriesModel categoriesModel) {
+  Widget buildHomeWidget(HomeModel homeModel, CategoriesModel categoriesModel,
+      BuildContext context) {
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Column(
@@ -61,62 +71,64 @@ class HomeScreen extends StatelessWidget {
           SizedBox(
             height: 10,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Categories",
-                textAlign: TextAlign.start,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                    fontSize: 25,
-                    color: Colors.orange[900],
-                    fontWeight: FontWeight.w600),
-              ),
-              Container(
-                padding: EdgeInsets.all(10),
-                margin: EdgeInsets.all(10),
-                height: 100.0,
-                child: ListView.separated(
-                    physics: BouncingScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) =>
-                        buildCategoryItem(categoriesModel.data.data[index]),
-                    separatorBuilder: (context, index) => SizedBox(
-                          width: 10,
-                        ),
-                    itemCount: categoriesModel.data.data.length),
-              ),
-              Text(
-                "New Products",
-                textAlign: TextAlign.start,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                    fontSize: 25,
-                    color: Colors.orange[900],
-                    fontWeight: FontWeight.w600),
-              ),
-            ],
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Categories",
+                  textAlign: TextAlign.start,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600),
+                ),
+                Container(
+                  margin: EdgeInsets.all(10),
+                  height: 100.0,
+                  child: ListView.separated(
+                      physics: BouncingScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) =>
+                          buildCategoryItem(categoriesModel.data.data[index]),
+                      separatorBuilder: (context, index) => SizedBox(
+                            width: 10,
+                          ),
+                      itemCount: categoriesModel.data.data.length),
+                ),
+                Text(
+                  "New Products",
+                  textAlign: TextAlign.start,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
           ),
           SizedBox(
             height: 10,
           ),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 5),
-            color: Colors.grey[300],
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            // color: Colors.grey[300],
             child: GridView.count(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               crossAxisCount: 2,
               mainAxisSpacing: 4.0,
               crossAxisSpacing: 4.0,
-              childAspectRatio: 1 / 1.6,
+              childAspectRatio: 1 / 1.65,
               children: List.generate(
                   homeModel.data.products.length,
-                  (index) =>
-                      buildGridProductItem(homeModel.data.products[index])),
+                  (index) => buildGridProductItem(
+                      homeModel.data.products[index], context)),
             ),
           )
         ],
@@ -147,16 +159,16 @@ class HomeScreen extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-                fontSize: 15,
-                color: Colors.orange[900],
-                fontWeight: FontWeight.w700),
+                fontSize: 15, color: Colors.black, fontWeight: FontWeight.w700),
           ),
         ),
       ],
     );
   }
 
-  Widget buildGridProductItem(ProductsModel productsModel) => Container(
+  Widget buildGridProductItem(
+          ProductsModel productsModel, BuildContext context) =>
+      Container(
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(25))),
@@ -185,14 +197,17 @@ class HomeScreen extends StatelessWidget {
             SizedBox(
               height: 5,
             ),
-            Text(
-              productsModel.name,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                  color: Colors.amber[900],
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text(
+                productsModel.name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600),
+              ),
             ),
             Container(
               padding: EdgeInsets.all(8),
@@ -220,8 +235,19 @@ class HomeScreen extends StatelessWidget {
                       textAlign: TextAlign.start,
                     ),
                   Spacer(),
-                  IconButton(
-                      onPressed: () {}, icon: Icon(Icons.favorite_border))
+                  CircleAvatar(
+                    backgroundColor: BottomBarCubit.get(context)
+                            .favoriteProducts[productsModel.id]
+                        ? defaultColor
+                        : Colors.grey,
+                    child: IconButton(
+                        onPressed: () {
+                          print(productsModel.id.toString());
+                          BottomBarCubit.get(context)
+                              .getFcavoritesProducts(productsModel.id);
+                        },
+                        icon: Icon(Icons.favorite_border)),
+                  ),
                 ],
               ),
             ),

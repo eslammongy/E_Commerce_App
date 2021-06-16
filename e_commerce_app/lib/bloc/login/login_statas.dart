@@ -1,19 +1,19 @@
 import 'package:e_commerce_app/model/login_model.dart';
 
-abstract class UserLoginStates {}
+abstract class UserRegisterStates {}
 
-class UserLoginIntialState extends UserLoginStates {}
+class UserRegisterIntialState extends UserRegisterStates {}
 
-class UserLoginLoadingState extends UserLoginStates {}
+class UserRegisterLoadingState extends UserRegisterStates {}
 
-class UserLoginSuccessState extends UserLoginStates {
-  final UserLoginModel loginModel;
-  UserLoginSuccessState({this.loginModel});
+class UserRegisterSuccessState extends UserRegisterStates {
+  final UserLoginModel RegisterModel;
+  UserRegisterSuccessState({this.RegisterModel});
 }
 
-class UserChangePasswordVisibiltyState extends UserLoginStates {}
+class UserChangePasswordVisibiltyState extends UserRegisterStates {}
 
-class UserLoginErrorState extends UserLoginStates {
+class UserRegisterErrorState extends UserRegisterStates {
   final String errorMessage;
-  UserLoginErrorState({this.errorMessage});
+  UserRegisterErrorState({this.errorMessage});
 }

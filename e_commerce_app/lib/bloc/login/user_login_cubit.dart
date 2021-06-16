@@ -6,26 +6,46 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class UserLoginCubit extends Cubit<UserLoginStates> {
-  UserLoginCubit() : super(UserLoginIntialState());
-  static UserLoginCubit get(context) => BlocProvider.of(context);
+class UserRegisterCubit extends Cubit<UserRegisterStates> {
+  UserRegisterCubit() : super(UserRegisterIntialState());
+  static UserRegisterCubit get(context) => BlocProvider.of(context);
 
-  UserLoginModel loginModel;
+  UserLoginModel RegisterModel;
   void userLogin({@required String email, @required String password}) {
-    emit(UserLoginLoadingState());
+    emit(UserRegisterLoadingState());
     DioServices.postData(url: LOGIN, data: {
       'email': email,
       'password': password,
     }).then((value) {
       print(value.data);
-      loginModel = UserLoginModel.fromJson(value.data);
-      // print(loginModel.message);
-      // print(loginModel.status);
-      // print(loginModel.userLoginData.email);
-      emit(UserLoginSuccessState(loginModel: loginModel));
+      RegisterModel = UserLoginModel.fromJson(value.data);
+
+      emit(UserRegisterSuccessState(RegisterModel: RegisterModel));
     }).catchError((onError) {
       print(onError.toString());
-      emit(UserLoginErrorState(errorMessage: onError.toString()));
+      emit(UserRegisterErrorState(errorMessage: onError.toString()));
+    });
+  }
+
+  void userRegister(
+      {@required String name,
+      @required String phone,
+      @required String email,
+      @required String password}) {
+    emit(UserRegisterLoadingState());
+    DioServices.postData(url: REGISTER, data: {
+      'name': name,
+      'email': email,
+      'password': password,
+      'phone': phone,
+    }).then((value) {
+      print(value.data);
+      RegisterModel = UserLoginModel.fromJson(value.data);
+
+      emit(UserRegisterSuccessState(RegisterModel: RegisterModel));
+    }).catchError((onError) {
+      print(onError.toString());
+      emit(UserRegisterErrorState(errorMessage: onError.toString()));
     });
   }
 

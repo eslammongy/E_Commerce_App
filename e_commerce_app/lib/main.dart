@@ -41,14 +41,16 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => UserLoginCubit(),
+            create: (context) => UserRegisterCubit(),
           ),
           BlocProvider(
               create: (BuildContext context) => BottomBarCubit()
                 ..getHomeData()
-                ..getCategoriesData())
+                ..getCategoriesData()
+                ..getFavoriteProductsData()
+                ..getUserInfo())
         ],
-        child: BlocConsumer<UserLoginCubit, UserLoginStates>(
+        child: BlocConsumer<UserRegisterCubit, UserRegisterStates>(
           listener: (context, State) {},
           builder: (context, State) => MaterialApp(
             title: 'Flutter Demo',

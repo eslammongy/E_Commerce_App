@@ -32,11 +32,14 @@ class CategoryScreen extends StatelessWidget {
         padding: const EdgeInsets.all(15.0),
         child: Row(
           children: [
-            Image(
-              image: NetworkImage(dataModel.image),
-              width: 120,
-              height: 120,
-              fit: BoxFit.contain,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image(
+                image: NetworkImage(dataModel.image),
+                width: 120,
+                height: 120,
+                fit: BoxFit.fill,
+              ),
             ),
             SizedBox(
               width: 20,
@@ -48,7 +51,7 @@ class CategoryScreen extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                   fontSize: 25,
-                  color: Colors.orange[900],
+                  color: Colors.black,
                   fontWeight: FontWeight.w700),
             ),
             Spacer(),
